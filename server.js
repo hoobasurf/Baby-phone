@@ -5,19 +5,19 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: { origin: "*" } // autorise toutes les origines pour Netlify
+    cors: { origin: "*" } // autorise toutes les origines
 });
 
 // Vérification serveur
 app.get("/", (req, res) => res.send("Babyphone serveur actif"));
 
-// Stocke temporairement les blobs audio
+// Relais audio
 io.on("connection", (socket) => {
     console.log("Client connecté :", socket.id);
 
-    // Quand le bébé envoie un blob audio
+    // Quand bébé envoie audio
     socket.on("audio-stream", (data) => {
-        // Renvoie à tous les autres clients (parents)
+        // Envoyer aux autres clients (parents)
         socket.broadcast.emit("audio-stream", data);
     });
 
